@@ -7,13 +7,14 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.utils import timezone
 from django.db.models import Count, Sum
 from django.db import transaction
-
+from django.views.generic import TemplateView
 
 # Create your views here.
 # una función que devuelve un archivo HTML almacenado en una carpeta específica
 # cuando se llama desde una URL específica.
-def welcome(request):
-    return render(request, 'tienda/index.html', {})
+class WelcomeView(TemplateView):
+    template_name = "tienda/index.html"
+
 
 
 # @login_required: Esto significa que para acceder a la función "productos",
