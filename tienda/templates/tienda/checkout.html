@@ -1,0 +1,26 @@
+{% extends 'tienda/base.html' %}
+{% block content %}
+    <center>
+    <h2>Confirmación de Compra</h2>
+    <div class="productofinal">
+         <br><br>
+          <br><br>
+
+              <h2> {{producto.nombre}}</h2>
+        <br><br>
+
+          Modelos:{{producto.modelo}} /
+          Unidades:{{producto.unidades}}
+          <br>
+          Precio:{{producto.precio}} /
+          Marca:{{producto.marca}}
+
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_div }}
+            <br>
+            <button class="myButton6" type="submit">Compra</button>
+        </form>
+    </div>
+    </center>
+{% endblock %}

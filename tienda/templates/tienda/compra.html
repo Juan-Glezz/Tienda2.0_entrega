@@ -1,0 +1,24 @@
+{%  extends 'tienda/producto.html' %}
+    {% block content %}
+    <form action="{% url 'buscar' %}" method="get">
+        <input id="inp_search" type="text" placeholder="Buscar..." name="buscar_post" />
+        <label for="btn_search"><i class="gg-search"></i></label>
+        <button class="button" id="btn_search" >🔎</button>
+    </form>
+        <div class="secciones">
+        {% for producto in Productos %}
+            <div class="producto">
+                <h1>{{ producto.nombre }}</h1>
+                <p>{{ producto.marca }}</p>
+                <p>{{ producto.modelo }}</p>
+                <p>{{ producto.precio }}€</p>
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_div }}
+                <br>
+            <a class="myButton3" href="{% url 'checkout' pk=producto.pk %}" >Comprar</a>
+            </div>
+            </form>
+        {% endfor %}
+        </div>
+    {% endblock %}

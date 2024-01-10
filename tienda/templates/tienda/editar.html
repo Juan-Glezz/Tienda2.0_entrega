@@ -1,0 +1,15 @@
+{%  extends 'tienda/base.html' %}
+    {% block content %}
+    <h1>Editar info Producto</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Guardar</button>
+    </form>
+    <form action="" method="POST">
+        {% csrf_token %}
+       
+      </form>
+      <a href="{% url 'eliminar' pk=pk %}" >Eliminar</a>
+    <a href="{% url 'welcome' %}">Regresar a productos </a>
+    {% endblock %}

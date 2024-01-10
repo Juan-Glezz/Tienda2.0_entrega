@@ -1,0 +1,283 @@
+*{
+	margin: 10px;
+}
+.titulo{
+		color: #333333;
+		text-shadow: 2px 2px 0px #FFFFFF, 5px 4px 0px rgba(0,0,0,0.15);
+		color: #333333;
+		font-size: 50px;
+	text-decoration: none;
+	color: #030303;
+}
+.page-header{
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	grid-template-rows: auto;
+	grid-gap: 700px;
+	border-width: 5px;
+border-style: ridge;
+border-color: #000000;
+background: rgb(2,0,36);
+background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(49,95,231,1) 58%, rgba(75,209,236,1) 96%);
+}
+.secciones{
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr ;
+	grid-template-rows: auto;
+	grid-gap: 10px;
+}
+.button{
+	border-radius: 20px;
+}
+.producto{
+	width: 300px;
+	height: 300px;
+	border: 6px groove #000000;
+	border-radius: 25px 25px 11px 11px;
+	text-align: center;
+	color: white;
+	background: rgb(0,0,0);
+	background: linear-gradient(32deg, rgba(0,0,0,1) 0%, rgba(19,166,231,1) 84%, rgba(0,0,0,1) 89%);
+	-webkit-box-shadow: 5px 5px 5px 0px #000000, inset 4px 4px 15px 0px #000000, 5px 5px 5px 5px rgba(0,0,0,0);
+	box-shadow: 5px 5px 5px 0px #000000, inset 4px 4px 15px 0px #000000, 5px 5px 5px 5px rgba(0,0,0,0);
+}
+.productofinal{
+	width: 500px;
+	height: 500px;
+	border: 6px groove #000000;
+	border-radius: 25px 25px 11px 11px;
+	text-align: center;
+	color: white;
+	background: rgb(0,0,0);
+	background: linear-gradient(32deg, rgba(0,0,0,1) 0%, rgba(19,166,231,1) 84%, rgba(0,0,0,1) 89%);
+	-webkit-box-shadow: 5px 5px 5px 0px #000000, inset 4px 4px 15px 0px #000000, 5px 5px 5px 5px rgba(0,0,0,0);
+	box-shadow: 5px 5px 5px 0px #000000, inset 4px 4px 15px 0px #000000, 5px 5px 5px 5px rgba(0,0,0,0);
+}
+.registro {
+	box-shadow: 3px 4px 0px 0px #000000;
+	background:linear-gradient(to bottom, #ffffff 5%, #ffffff 100%);
+	background-color:#ffffff;
+	border-radius:5px;
+	border:1px solid #080808;
+	display:inline-block;
+	cursor:pointer;
+	color:#030303;
+	font-family:Arial;
+	font-size:17px;
+	font-weight:bold;
+	font-style:italic;
+	padding:10px 37px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #000000;
+	margin-left: 250px;
+}
+.registro:hover {
+	background:linear-gradient(to bottom, #ffffff 5%, #ffffff 100%);
+	background-color:#ffffff;
+	color: grey;
+}
+.registro:active {
+	position:relative;
+	top:1px;
+}
+.myButton {
+	box-shadow:inset 0px 1px 3px 0px #1808ff;
+	background:linear-gradient(to bottom, #0f6fff 5%, #1c1f1f 100%);
+	background-color:#0f6fff;
+	border-radius:5px;
+	border:1px solid #141716;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:15px;
+	font-weight:bold;
+	padding:5px 10px;
+	text-decoration:none;
+}
+.myButton:hover {
+	background:linear-gradient(to bottom, #1c1f1f 5%, #0f6fff 100%);
+	color: #a4a0a0;
+}
+.myButton:active {
+	position:relative;
+	top:1px;
+}
+.myButton2 {
+	box-shadow:inset 0px 1px 3px 0px #ff0a0a;
+	background:linear-gradient(to bottom, #ff0f0f 5%, #1c1f1f 100%);
+	background-color:#ff0f0f;
+	border-radius:5px;
+	border:1px solid #141716;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:15px;
+	font-weight:bold;
+	padding:5px 10px;
+	text-decoration:none;
+	text-shadow:0px -1px 0px #000000;
+}
+.myButton2:hover {
+	background:linear-gradient(to bottom, #000000 5%, #ff0f0f 100%);
+	color: #a4a0a0;
+}
+.myButton2:active {
+	position:relative;
+	top:1px;
+}
+.myButton3 {
+	box-shadow:inset 0px 1px 3px 0px #0aff0e;
+	background:linear-gradient(to bottom, #0aff0e 5%, #1c1f1f 100%);
+	background-color: #0aff0e;
+	border-radius:5px;
+	border:1px solid #141716;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:15px;
+	font-weight:bold;
+	padding:5px 10px;
+	text-decoration:none;
+	text-shadow:0px -1px 0px #000000;
+}
+.myButton3:hover {
+	background:linear-gradient(to bottom, #000000 5%, #0aff0e 100%);
+	color: #a4a0a0;
+}
+.myButton3:active {
+	position:relative;
+	top:1px;
+}
+
+
+.myButton4 {
+	box-shadow: 3px 4px 0px 0px #000000;
+	background:linear-gradient(to bottom, #6232ab 5%, #2ab5c7 100%);
+	background-color:#6232ab;
+	border-radius:5px;
+	border:1px solid #000000;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:15px;
+	font-weight:bold;
+	padding:12px 44px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #000000;
+}
+.myButton4:hover {
+	background:linear-gradient(to bottom, #2ab5c7 5%, #6232ab 100%);
+	background-color:#2ab5c7;
+	color: #817e7e;
+}
+.myButton4:active {
+	position:relative;
+	top:1px;
+}
+.myButton5 {
+	box-shadow: 3px 4px 0px 0px #000000;
+	background:linear-gradient(to bottom, #1d95cc 5%, #28c7ba 100%);
+	background-color:#1d95cc;
+	border-radius:5px;
+	border:1px solid #000000;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:15px;
+	font-weight:bold;
+	padding:12px 44px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #000000;
+}
+.myButton5:hover {
+	background:linear-gradient(to bottom, #28c7ba 5%, #1d95cc 100%);
+	background-color:#28c7ba;
+	color: #141716;
+}
+.myButton5:active {
+	position:relative;
+	top:1px;
+}
+
+.myButton6 {
+  min-width: 130px;
+  height: 40px;
+  color: #fff;
+  padding: 5px 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  display: inline-block;
+  outline: none;
+  border-radius: 5px;
+  border: none;
+  background: #3a86ff;
+  box-shadow: 0 5px #4433ff;
+}
+.myButton6:hover {
+  box-shadow: 0 3px #4433ff;
+  top: 1px;
+}
+.myButton6:active {
+  box-shadow: 0 0 #4433ff;
+  top: 5px;
+}
+.enlace{
+	text-decoration: none;
+	color: white;
+}
+.enlace:hover {
+	color: #141716;
+}
+
+
+table.tablap {
+  border: 2px solid #A40808;
+  background-color: #EEE7DB;
+  width: 100%;
+  text-align: center;
+  border-collapse: collapse;
+}
+table.tablap td, table.tablap th {
+  border: 1px solid #AAAAAA;
+  padding: 3px 2px;
+}
+table.tablap tbody td {
+  font-size: 13px;
+}
+table.tablap tr:nth-child(even) {
+  background: #F5C8BF;
+}
+table.tablap thead {
+  background: #A40808;
+}
+table.tablap thead th {
+  font-size: 19px;
+  font-weight: bold;
+  color: #FFFFFF;
+  text-align: center;
+  border-left: 2px solid #A40808;
+}
+table.tablap thead th:first-child {
+  border-left: none;
+}
+
+table.tablap tfoot td {
+  font-size: 13px;
+}
+table.tablap tfoot .links {
+  text-align: right;
+}
+table.tablap tfoot .links a{
+  display: inline-block;
+  background: #FFFFFF;
+  color: #A40808;
+  padding: 2px 8px;
+  border-radius: 5px;
+}

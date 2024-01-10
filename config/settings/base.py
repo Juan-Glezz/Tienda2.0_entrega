@@ -52,7 +52,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'main',
-    'tienda',
+    'tienda'
 ]
 
 MIDDLEWARE = [
@@ -67,7 +67,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'tienda.urls'
+ROOT_URLCONF = 'main.urls'
 
 TEMPLATES = [
     {

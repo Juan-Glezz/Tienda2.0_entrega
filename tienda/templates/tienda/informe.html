@@ -1,0 +1,40 @@
+{% extends 'tienda/base.html' %}
+{% block content %}
+    {% if topP %}
+    <h2>Los productos mas comprados</h2>
+        <table class="tablap">
+    {% for producto in topP %}
+        <tr>
+            <th>{{ producto.nombre }}</th>
+        </tr>
+         <tr>
+            <td>Se ha comprado {{ producto.sum_unidades }} veces</td>
+        </tr>
+
+         {% endfor %}
+    </table>
+     {% endif %}
+
+    {% if clientes %}
+      <h2>Lo mejores Clientes</h2>
+    {% for cliente in clientes %}
+    {{ cliente.user.username }}
+     ha gastado: {{ cliente.gastado }}
+     <br>
+    {% endfor %}
+    {% endif %}
+
+    {% if compras %}
+       <h2>Todas las compras</h2>
+        {% for compra in compras %}
+         {{ compra.producto.nombre }}
+          <br>
+          Fecha: {{ compra.fecha }} <br>
+          Unidades: {{ compra.unidades }} <br>
+          Importe total: {{ compra.importe }} <br>
+        <br>
+         {% endfor %}
+    {% endif %}
+
+
+{% endblock %}

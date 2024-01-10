@@ -1,0 +1,21 @@
+
+{%  extends 'tienda/base.html' %}
+    {% block content %}
+        <div class="secciones">
+        {% for producto in Productos %}
+          <div class="producto">
+              <h1> {{producto.nombre}}</h1>
+          Modelos:{{producto.modelo}} /
+          Unidades:{{producto.unidades}}
+          <br>
+          Precio:{{producto.precio}} /
+          Marca:{{producto.marca}}
+              
+          <br>
+            <a class="myButton2" href="{% url 'eliminar' pk=producto.pk %}" >Eliminar Producto</a>
+            <a class="myButton" href="{% url 'editar' pk=producto.pk %}" >Editar Producto</a>
+          </div>
+        {% endfor %}
+        </div>
+        <a class="myButton3" href="{% url 'nuevo' %}" >Añadir Nuevo Producto</a>
+    {% endblock %}
