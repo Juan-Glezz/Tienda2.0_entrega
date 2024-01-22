@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .views import WelcomeView,ProductosView,CompraView,Post_EditView,Post_eliminarView,Post_Nuevo_View,Log_In_View,TopProducto_Views,Log_outView
+from .views import WelcomeView,ProductosView,CompraView,Post_EditView,Post_eliminarView,Post_Nuevo_View,Log_In_View,TopProducto_Views,Log_outView,historial_View,topClientes_View, perfil_view
 urlpatterns = [
     path('', CompraView.as_view(), name='welcome'),
     path('tienda/', CompraView.as_view(), name='compra'),
@@ -12,7 +12,8 @@ urlpatterns = [
     path('tienda/login/', Log_In_View.as_view(), name='login'),
     path('tienda/checkout/<int:pk>/', views.checkout, name='checkout'),
     path('tienda/logout/', Log_outView.as_view(), name='logout'),
-    path('tienda/informes/top10Compras/',TopProducto_Views.as_view(), name='top_productos'),
-    path('tienda/informes/top10mejores/', views.topClientes, name='top_clientes'),
-    path('tienda/informes/historialCompras/', views.historial, name='historial'),
+    path('tienda/informes/top10Compras/', TopProducto_Views.as_view(), name='top_productos'),
+    path('tienda/informes/top10mejores/', topClientes_View.as_view(), name='top_clientes'),
+    path('tienda/informes/historialCompras/', historial_View.as_view(), name='historial'),
+    path('tienda/perfil/', perfil_view.as_view(), name='perfil'),
 ]

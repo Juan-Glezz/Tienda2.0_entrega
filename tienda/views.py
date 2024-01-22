@@ -1,6 +1,7 @@
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import LoginView
 from django.shortcuts import render, get_object_or_404, redirect
-from .form import PostProducto, LoginForm, CompraForm, RegistroForm
+from .form import PostProducto, LoginForm, CompraForm, RegistroForm, ClienteForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
@@ -12,6 +13,10 @@ from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView, ListView, CreateView, UpdateView, DeleteView
 from django.views import View
 from django.urls import reverse_lazy
+
+
+def cliente_existe(user):
+    return Cliente.objects.filter(user=user).exists()
 
 
 # Create your views here.
@@ -84,6 +89,7 @@ class Post_EditView(UpdateView):
 @method_decorator(staff_member_required, name='dispatch')
 class Post_eliminarView(DeleteView):
     model = Producto
+
     def get(self, request, pk):
         producto = Producto.objects.filter(pk=pk).delete()
         return redirect('productos')
@@ -135,6 +141,7 @@ class Log_In_View(LoginView):
         response = super().form_invalid(form)
         return response
 
+
 # Este código es una función llamada log_out que se encarga de cerrar la sesión de un usuario.
 # Primero, se llama a la función logout pasándole el objeto request, lo cual desloguea al
 # usuario actual. Luego, se redirige al usuario a la página de bienvenida utilizando la función redirect
@@ -182,45 +189,50 @@ def checkout(request, pk):
 # de compras que han tenido en orden descendente y se seleccionan los primeros 10 productos de la
 # lista. Una vez terminado eso, devuelve una respuesta renderizando el template tienda/top10Compras.html
 # y pasando la variable productos para poder acceder a ellos en la plantilla.
-class TopProducto_Views(View):
+class TopProducto_Views(ListView):
     template_name = 'tienda/informe.html'
-
-    @method_decorator(login_required(login_url='/tienda/registro/login/'))
-    @method_decorator(staff_member_required)
-    def dispatch(self, *args, **kwargs):
-        return super().dispatch(*args, **kwargs)
+    context_object_name = 'topP'
 
     def get(self, request):
-        topP = Producto.objects.annotate(purchase_count=Count('compra')).order_by('-purchase_count')[10]
+        topP = Producto.objects.annotate(sum_unidades=Sum('compra__unidades'),
+                                         sum_importes=Sum('compra__importe')).order_by('-sum_unidades')[:10]
         return render(request, self.template_name, {'topP': topP})
 
 
-# @login_required(login_url='/tienda/login/')
-# @staff_member_required
-# def topProductos(request):
-#     topP = Producto.objects.annotate(sum_unidades=Sum('compra__unidades'),
-#                                      sum_importes=Sum('compra__importe')).order_by('-sum_unidades')[:10]
-#     return render(request, 'tienda/informe.html', {'topP': topP})
-
-
-# La función, realiza una consulta a la base de datos para obtener los 10 mejores clientes.
+# La función realiza una consulta a la base de datos para obtener los 10 mejores clientes.
 # Utilizando Cliente.objects.annotate(gastado=Sum('compra__importe')), se agrega una anotación
 # llamada gastado que calcula la suma de los importes de todas las compras realizadas por cada cliente.
 # Luego, los resultados se ordenan de forma descendente basándose en el campo gastado. Finalmente, se
 # renderiza la plantilla top10mejores.html con los datos de los topClientes.
-@login_required(login_url='/tienda/login/')
-@staff_member_required
-def topClientes(request):
-    clientes = Cliente.objects.annotate(gastado=Sum('compra__importe')).order_by('-gastado')[:10]
-    return render(request, 'tienda/informe.html', {'clientes': clientes})
+class topClientes_View(ListView):
+    model = Cliente
+    template_name = 'tienda/informe.html'
+    context_object_name = 'clientes'
+
+    def get_queryset(self):
+        return Cliente.objects.annotate(gastado=Sum('compra__importe')).order_by('-gastado')[:10]
 
 
 # En esta funcion, se obtiene todas las compras realizadas por un usuario mediante el uso de
 # la función filter de la clase Compra. Estas compras se ordenan por fecha en orden descendente.
 # Luego, se renderiza la plantilla tienda/historialCompras.html y se pasa el resultado de la consulta a compras.
 # Esto permitirá que la plantilla acceda a los datos de las compras y los muestre correctamente.
-@login_required(login_url='/tienda/login/')
-@staff_member_required
-def historial(request):
-    compras = Compra.objects.all().order_by('-fecha')
-    return render(request, 'tienda/informe.html', {'compras': compras})
+class historial_View(ListView):
+    model = Compra
+    template_name = 'tienda/informe.html'
+    context_object_name = 'compras'
+    ordering = '-fecha'
+
+    def get_queryset(self):
+        return super().get_queryset().order_by(self.ordering)
+
+
+class perfil_view(LoginRequiredMixin, UpdateView):
+    redirect_field_name = "/tienda/login/"
+    model = Cliente
+    form_class = ClienteForm
+    template_name = 'tienda/perfil.html'
+    success_url = reverse_lazy('perfil_cliente')
+
+    def get_object(self, queryset=None):
+        return self.request.user.cliente

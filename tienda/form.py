@@ -1,4 +1,4 @@
-from .models import Producto,Compra
+from .models import Producto,Compra, Cliente
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
@@ -48,4 +48,10 @@ class LoginForm(AuthenticationForm):
     username = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput)
     next = forms.CharField(widget=forms.HiddenInput, initial="/tienda")
+
+
+class ClienteForm(forms.ModelForm):
+    class Meta:
+        model = Cliente
+        fields = ['user', 'vip', 'saldo']
 
