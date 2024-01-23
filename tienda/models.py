@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.utils import timezone
 
+
 # Create your models here.
 class Marca(models.Model):
     nombre = models.CharField(max_length=30, unique=True)
@@ -64,7 +65,7 @@ class Producto(models.Model):
 class Cliente(models.Model):
     vip = models.BooleanField(default=False)
     saldo = models.DecimalField(max_digits=12, decimal_places=2)
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,max_length=40)
 
     def __str__(self):
         return f'{self.user.username}'
@@ -100,3 +101,33 @@ class Compra(models.Model):
     class Meta:
         unique_together = ['fecha', 'producto', 'user']
         verbose_name_plural = "Compras"
+
+
+class Direccion(models.Model):
+    direccion_envio = models.TextField(blank=True, null=True)
+    direccion_facturacion = models.TextField(blank=True, null=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.user.username
+
+    class Meta:
+        verbose_name_plural = "Direcciones"
+
+
+class Tarjeta(models.Model):
+    nombre_tarjeta = models.CharField(max_length=40, blank=True, null=True)
+    TIPO_TARJETA_CHOICES = [
+        ('VISA', 'Visa'),
+        ('MASTERCARD', 'Mastercard'),
+    ]
+    tipo_tarjeta = models.CharField(max_length=20, choices=TIPO_TARJETA_CHOICES, blank=True, null=True)
+    titular_tarjeta = models.CharField(max_length=40, blank=True, null=True)
+    caducidad_tarjeta = models.DateField(blank=True, null=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.user.username
+
+    class Meta:
+        verbose_name_plural = "Tarjetas"

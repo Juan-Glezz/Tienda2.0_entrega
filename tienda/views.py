@@ -1,14 +1,14 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import LoginView
 from django.shortcuts import render, get_object_or_404, redirect
-from .form import PostProducto, LoginForm, CompraForm, RegistroForm, ClienteForm
+from .form import PostProducto, LoginForm, CompraForm, RegistroForm, ClienteForm, DireccionesForm, TarjetasForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.utils import timezone
 from django.db.models import Count, Sum
 from django.db import transaction
-from .models import Producto, Cliente, Compra, Marca
+from .models import Producto, Cliente, Compra, Marca, Direccion, Tarjeta
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView, ListView, CreateView, UpdateView, DeleteView
 from django.views import View
@@ -227,12 +227,72 @@ class historial_View(ListView):
         return super().get_queryset().order_by(self.ordering)
 
 
-class perfil_view(LoginRequiredMixin, UpdateView):
+class EditarDireccionView(LoginRequiredMixin, UpdateView):
     redirect_field_name = "/tienda/login/"
-    model = Cliente
-    form_class = ClienteForm
+    model = Direccion
+    form_class = DireccionesForm
     template_name = 'tienda/perfil.html'
+    context_object_name = 'direcciones'
     success_url = reverse_lazy('perfil_cliente')
 
-    def get_object(self, queryset=None):
-        return self.request.user.cliente
+    def get(self, request, *args, **kwargs):
+        direccion, created = Direccion.objects.get_or_create(user=request.user)
+        form = DireccionesForm(instance=direccion)
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        # Obtener el perfil del cliente actual o crear uno nuevo si no existe
+        direccion, created = Direccion.objects.get_or_create(user=request.user)
+        form = DireccionesForm(request.POST, instance=direccion)
+        if form.is_valid():
+            form.save()
+            return redirect('menu')
+        return render(request, self.template_name, {'form': form})
+
+
+class EditarTarjetaView(LoginRequiredMixin, UpdateView):
+    edirect_field_name = "/tienda/login/"
+    model = Tarjeta
+    form_class = TarjetasForm
+    template_name = 'tienda/perfil.html'
+    context_object_name = 'tarjetas'
+    success_url = reverse_lazy('perfil_cliente')
+
+    def get(self, request, *args, **kwargs):
+        tarjeta, created = Tarjeta.objects.get_or_create(user=request.user)
+        form = TarjetasForm(instance=tarjeta)
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        tarjeta, created = Tarjeta.objects.get_or_create(user=request.user)
+        form = TarjetasForm(request.POST, instance=tarjeta)
+        if form.is_valid():
+            form.save()
+            return redirect('menu')
+        return render(request, self.template_name, {'form': form})
+
+
+class EditarGeneralView(LoginRequiredMixin, UpdateView):
+    redirect_field_name = "/tienda/login/"
+    model = Tarjeta
+    form_class = ClienteForm
+    template_name = 'tienda/perfil.html'
+    context_object_name = 'general'
+    success_url = reverse_lazy('perfil_cliente')
+
+    def get(self, request, *args, **kwargs):
+        cliente, created = Cliente.objects.get_or_create(user=request.user)
+        form = ClienteForm(instance=cliente)
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        cliente, created = Cliente.objects.get_or_create(user=request.user)
+        form = ClienteForm(request.POST, instance=cliente)
+        if form.is_valid():
+            form.save()
+            return redirect('menu')
+        return render(request, self.template_name, {'form': form})
+
+
+class menuPerfil(TemplateView):
+    template_name = 'tienda/menu.html'

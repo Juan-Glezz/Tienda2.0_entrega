@@ -1,0 +1,8 @@
+{%  extends 'tienda/base.html' %}
+{% block content %}
+<center>
+    <a class="editar" href="{% url 'general' %}">Datos Generales</a>
+    <a class="editar" href="{% url 'direcciones' %}">Direcciones</a>
+    <a class="editar" href="{% url 'tarjetas' %}">Tarjetas</a>
+</center>
+{% endblock %}
