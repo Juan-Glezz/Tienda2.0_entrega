@@ -16,7 +16,7 @@ urlpatterns = [
     path('tienda/informes/top10mejores/', topClientes_View.as_view(), name='top_clientes'),
     path('tienda/informes/historialCompras/', historial_View.as_view(), name='historial'),
     path('tienda/menuPerfil/', menuPerfil.as_view(), name='menu'),
-    path('tienda/perfil/datosGenerales/', EditarGeneralView.as_view(), name='general'),
-    path('tienda/perfil/direcciones/', EditarDireccionView.as_view(), name='direcciones'),
-    path('tienda/perfil/tarjetas/', EditarTarjetaView.as_view(), name='tarjetas'),
+    path('tienda/datosGenerales/', EditarGeneralView.as_view(), name='general'),
+    path('tienda/direcciones/', EditarDireccionView.as_view(), name='direcciones'),
+    path('tienda/tarjetas/', EditarTarjetaView.as_view(), name='tarjetas'),
 ]

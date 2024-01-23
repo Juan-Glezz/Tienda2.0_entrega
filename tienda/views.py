@@ -231,8 +231,7 @@ class EditarDireccionView(LoginRequiredMixin, UpdateView):
     redirect_field_name = "/tienda/login/"
     model = Direccion
     form_class = DireccionesForm
-    template_name = 'tienda/perfil.html'
-    context_object_name = 'direcciones'
+    template_name = 'tienda/direcciones.html'
     success_url = reverse_lazy('perfil_cliente')
 
     def get(self, request, *args, **kwargs):
@@ -254,8 +253,7 @@ class EditarTarjetaView(LoginRequiredMixin, UpdateView):
     edirect_field_name = "/tienda/login/"
     model = Tarjeta
     form_class = TarjetasForm
-    template_name = 'tienda/perfil.html'
-    context_object_name = 'tarjetas'
+    template_name = 'tienda/tarjetas.html'
     success_url = reverse_lazy('perfil_cliente')
 
     def get(self, request, *args, **kwargs):
@@ -276,8 +274,7 @@ class EditarGeneralView(LoginRequiredMixin, UpdateView):
     redirect_field_name = "/tienda/login/"
     model = Tarjeta
     form_class = ClienteForm
-    template_name = 'tienda/perfil.html'
-    context_object_name = 'general'
+    template_name = 'tienda/datosGenerales.html'
     success_url = reverse_lazy('perfil_cliente')
 
     def get(self, request, *args, **kwargs):
@@ -296,3 +293,6 @@ class EditarGeneralView(LoginRequiredMixin, UpdateView):
 
 class menuPerfil(TemplateView):
     template_name = 'tienda/menu.html'
+
+
+
