@@ -14,7 +14,7 @@
 		<h1 class="titulo" ><a href="/">Tienda Virtual</a></h1>
 		<div class="usuario">
 			{% if user.is_authenticated %}
-				<p>{{ user.username }}, Has iniciado sesion</p>
+				<p class="colorLetra">{{ user.username }}, Has iniciado sesion</p>
 				<a class="registro" href="{% url 'logout' %}">Cerrar Sesion</a>
                 <a class="editar" href="{% url 'menu' %}">Perfil ✏</a>
 			{% else %}

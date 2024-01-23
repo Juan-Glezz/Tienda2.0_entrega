@@ -272,9 +272,9 @@ class EditarTarjetaView(LoginRequiredMixin, UpdateView):
 
 class EditarGeneralView(LoginRequiredMixin, UpdateView):
     redirect_field_name = "/tienda/login/"
-    model = Tarjeta
+    model = ClienteForm
     form_class = ClienteForm
-    template_name = 'tienda/datosGenerales.html'
+    template_name = 'tienda/perfil.html'
     success_url = reverse_lazy('perfil_cliente')
 
     def get(self, request, *args, **kwargs):

@@ -69,7 +69,7 @@ background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(49,95,231,1) 58%, rgb
 	padding:10px 37px;
 	text-decoration:none;
 	text-shadow:0px 1px 0px #000000;
-	margin-left: 250px;
+	margin-left: 100px;
 }
 .registro:hover {
 	background:linear-gradient(to bottom, #ffffff 5%, #ffffff 100%);
@@ -283,6 +283,7 @@ table.tablap tfoot .links a{
 }
 
 .perfil{
+	padding-top: 60px;
 	width: 500px;
 	height: auto;
 	border: #030303;
@@ -325,4 +326,7 @@ table.tablap tfoot .links a{
   top: 0;
   right: -20px;
   transition: 0.4s;
+}
+.colorLetra{
+	color: #FFFFFF;
 }
