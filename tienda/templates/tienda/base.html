@@ -18,8 +18,9 @@
 				<a class="registro" href="{% url 'logout' %}">Cerrar Sesion</a>
                 <a class="editar" href="{% url 'menu' %}">Perfil ✏</a>
 			{% else %}
-				<p>Hola, usuario, porfavor inicie sesion </p>
-				<a class="registro" href="{% url 'login' %}">Iniciar sesion</a>
+				<p>Hola, usuario, porfavor inicie sesión o registrese. </p>
+				<a class="registro" href="{% url 'login' %}">Iniciar sesión</a>
+                <a class="registro" href="{% url 'registro' %}">Registrarse  </a>
 			
 			{% endif %}
 		</div>

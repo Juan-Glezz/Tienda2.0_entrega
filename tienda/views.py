@@ -295,4 +295,23 @@ class menuPerfil(TemplateView):
     template_name = 'tienda/menu.html'
 
 
+class RegistroView(View):
+    template_name = 'tienda/registro.html'
+    form_class = RegistroForm
 
+    def get(self, request):
+        form = self.form_class()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.save()
+
+            cliente = Cliente(user=user, saldo=0, vip=False)
+            cliente.save()
+
+            login(request, user)
+            return redirect('welcome')
+        return render(request, self.template_name, {'form': form})
