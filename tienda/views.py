@@ -1,14 +1,15 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import LoginView
 from django.shortcuts import render, get_object_or_404, redirect
-from .form import PostProducto, LoginForm, CompraForm, RegistroForm, ClienteForm, DireccionesForm, TarjetasForm
+from .form import PostProducto, LoginForm, CompraForm, RegistroForm, ClienteForm, DireccionesForm, TarjetasForm, \
+    ComentarioForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.utils import timezone
 from django.db.models import Count, Sum
 from django.db import transaction
-from .models import Producto, Cliente, Compra, Marca, Direccion, Tarjeta
+from .models import Producto, Cliente, Compra, Marca, Direccion, Tarjeta, Comentario
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView, ListView, CreateView, UpdateView, DeleteView
 from django.views import View
@@ -315,3 +316,59 @@ class RegistroView(View):
             login(request, user)
             return redirect('welcome')
         return render(request, self.template_name, {'form': form})
+
+
+class ValorarProductoView(LoginRequiredMixin, View):
+    template_name = 'valorar_producto.html'
+
+    def post(self, request, producto_id):
+        producto=get_object_or_404(Producto,pk=producto_id)
+        valoracion=int(request.POST.get('valoracion'))
+        comentario_existente = Comentario.objects.filter(usuario=request.user, producto=producto).first()
+
+        if comentario_existente:
+            comentario_existente.valoracion = valoracion
+            comentario_existente.save()
+        else:
+            Comentario.objects.create(usuario=request.user, producto=producto, valoracion=valoracion)
+
+        return redirect('detalles_producto', producto_id=producto_id)
+
+    def get(self, request, producto_id):
+        producto = get_object_or_404(Producto, pk=producto_id)
+        return render(request, self.template_name, {'producto': producto})
+
+    class ModerarComentariosListView(UserPassesTestMixin, ListView):
+        template_name = 'moderar_comentarios.html'
+        queryset = Comentario.objects.filter(moderado=False)
+        context_object_name = 'comentarios_pendientes'
+
+        def test_func(self):
+            return self.request.user.is_staff
+
+    class ModerarComentarioView(UserPassesTestMixin, UpdateView):
+        model = Comentario
+        template_name = 'moderar_comentario.html'
+        fields = ['moderado']
+        success_url = '/moderar-comentarios/'
+
+        def test_func(self):
+            return self.request.user.is_staff
+
+    class EditarComentarioView(LoginRequiredMixin, UpdateView):
+        model = Comentario
+        template_name = 'editar_comentario.html'
+        form_class = ComentarioForm
+
+        def form_valid(self, form):
+            nextURL = self.get_success_url()
+            if not nextURL:
+                nextURL = 'tienda/'
+            return redirect(nextURL)
+
+        def dispatch(self, request, *args, **kwargs):
+            objeto = self.get_object()
+            if request.user != objeto.usuario:
+                # Lógica para manejar el caso en que el usuario no pueda editar el comentario
+                return redirect('checkout', producto_id=objeto.producto.id)
+            return super().dispatch(request, *args, **kwargs)

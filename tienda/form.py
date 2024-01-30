@@ -1,4 +1,4 @@
-from .models import Producto, Compra, Cliente,Tarjeta, Direccion
+from .models import Producto, Compra, Cliente, Tarjeta, Direccion, Comentario
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
@@ -51,7 +51,6 @@ class LoginForm(AuthenticationForm):
     next = forms.CharField(widget=forms.HiddenInput, initial="/tienda")
 
 
-
 class ClienteForm(forms.ModelForm):
     class Meta:
         model = Cliente
@@ -63,8 +62,20 @@ class DireccionesForm(forms.ModelForm):
         model = Direccion
         fields = ['direccion_envio', 'direccion_facturacion']
 
+
 class TarjetasForm(forms.ModelForm):
     class Meta:
         model = Tarjeta
         fields = ['nombre_tarjeta', 'tipo_tarjeta', 'titular_tarjeta', 'caducidad_tarjeta']
 
+
+class ComentarioForm(forms.ModelForm):
+    class Meta:
+        model = Comentario
+        fields = ['texto']
+
+
+class ComentarioEditForm(forms.ModelForm):
+    class Meta:
+        model = Comentario
+        fields = ['texto']

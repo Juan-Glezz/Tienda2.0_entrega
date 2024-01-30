@@ -1,0 +1,21 @@
+{% extends 'tienda/base.html' %}
+
+{% block content %}
+  <center>
+    <h2>Valorar Producto</h2>
+    <div class="valorar-producto">
+      <h3>{{ producto.nombre }}</h3>
+      <p>Modelo: {{ producto.modelo }} / Unidades: {{ producto.unidades }}</p>
+      <p>Precio: {{ producto.precio }} / Marca: {{ producto.marca }}</p>
+
+      <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="myButton6">Valorar</button>
+      </form>
+
+      <br><br>
+      <a href="{% url 'comentarios_producto' producto.id %}" class="myButton6">Comentarios</a>
+    </div>
+  </center>
+{% endblock %}
