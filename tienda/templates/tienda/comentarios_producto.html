@@ -1,0 +1,19 @@
+{% extends 'tienda/base.html' %}
+
+{% block content %}
+    <h2>Comentarios del Producto{{ producto.nombre }}</h2>
+    <ul>
+      {% for comentario in object_list %}
+        <li>
+          <strong>{{ comentario.user.username }}</strong> - {{ comentario.fecha_creacion|date}}
+          <br>
+          {{ comentario.texto }}
+          <br>
+          Valoración: {% for i in comentario.get_valoracion_display %}⭐{% endfor %}
+        </li>
+      {% empty %}
+        <li>No hay comentarios para este producto.</li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endblock %}

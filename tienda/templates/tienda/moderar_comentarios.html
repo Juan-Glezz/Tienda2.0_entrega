@@ -1,0 +1,20 @@
+{% extends 'tienda/base.html' %}
+
+{% block content %}
+  <center>
+    <h2>Moderar Comentarios</h2>
+    <div class="moderar-comentarios">
+      {% for comentario in comentarios_pendientes %}
+        <div class="comentario-pendiente">
+          <p>{{ comentario.usuario.username }} dijo:</p>
+          <p>{{ comentario.texto }}</p>
+          <form method="post" action="{% url 'moderar_comentario' comentario.id %}">
+            {% csrf_token %}
+            <input type="hidden" name="moderado" value="True">
+            <button type="submit" class="myButton6">Moderar</button>
+          </form>
+        </div>
+      {% endfor %}
+    </div>
+  </center>
+{% endblock %}

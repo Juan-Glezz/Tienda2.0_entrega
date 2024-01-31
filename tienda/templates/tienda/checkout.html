@@ -21,6 +21,9 @@
             <br>
             <button class="myButton6" type="submit">Compra</button>
         </form>
+         <a href="{% url 'valoracion_producto' pk=producto.pk %}" class="myButton6">Valoración</a>
+        <br>
+         <a href="{% url 'comentarios_producto' pk=producto.pk %}" class="myButton6">Comentarios</a>
     </div>
     </center>
 {% endblock %}

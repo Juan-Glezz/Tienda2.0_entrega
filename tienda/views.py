@@ -1,14 +1,15 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import LoginView
 from django.shortcuts import render, get_object_or_404, redirect
-from .form import PostProducto, LoginForm, CompraForm, RegistroForm, ClienteForm, DireccionesForm, TarjetasForm
+from .form import PostProducto, LoginForm, CompraForm, RegistroForm, ClienteForm, DireccionesForm, TarjetasForm, \
+    ComentarioForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.utils import timezone
 from django.db.models import Count, Sum
 from django.db import transaction
-from .models import Producto, Cliente, Compra, Marca, Direccion, Tarjeta
+from .models import Producto, Cliente, Compra, Marca, Direccion, Tarjeta, Comentario
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView, ListView, CreateView, UpdateView, DeleteView
 from django.views import View
@@ -315,3 +316,60 @@ class RegistroView(View):
             login(request, user)
             return redirect('welcome')
         return render(request, self.template_name, {'form': form})
+
+
+class ValorarProductoView(LoginRequiredMixin, CreateView):
+    login_url = 'login'
+    template_name = 'tienda/valorar_producto.html'
+    model = Comentario
+    form_class = ComentarioForm
+    success_url = reverse_lazy('comentarios_producto')
+
+    def form_valid(self, form):
+        compra_id = self.kwargs['pk']
+        compra = get_object_or_404(Compra, id=compra_id)
+        producto = compra.producto  # Obtén el producto asociado a la compra
+        form.instance.user = self.request.user
+        form.instance.producto = producto
+        form.instance.fecha_creacion = timezone.now()
+        form.instance.fecha_actualizacion = timezone.now()
+        return super().form_valid(form)
+
+    @method_decorator(staff_member_required)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
+    def get_context_data(self, **kwargs, ):
+        context = super().get_context_data(**kwargs)
+        producto_pk = self.kwargs['pk']
+        context['producto'] = Producto.objects.get(pk=producto_pk)
+        return context
+
+
+class MostrarComentariosView(LoginRequiredMixin, ListView):
+    model = Comentario
+    template_name = 'tienda/comentarios_producto.html'
+
+    def get_queryset(self):
+        filter
+
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
+
+class EditarComentarioView(LoginRequiredMixin, UpdateView):
+    model = Comentario
+    template_name = 'templates/tienda/editar_comentario.html'
+    form_class = ComentarioForm
+
+    def form_valid(self, form):
+        nextURL = self.get_success_url()
+        if not nextURL:
+            nextURL = 'tienda/'
+        return redirect(nextURL)
+
+    def dispatch(self, request, *args, **kwargs):
+        objeto = self.get_object()
+        if request.user != objeto.usuario:
+            return redirect('checkout', producto_id=objeto.producto.id)
+        return super().dispatch(request, *args, **kwargs)

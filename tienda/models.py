@@ -137,11 +137,11 @@ class Tarjeta(models.Model):
 class Comentario(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
-    texto = models.TextField()
+    texto = models.TextField(blank=True, null=True)
     valoracion = models.IntegerField(choices=[(1, '⭐'), (2, '⭐⭐'), (3, '⭐⭐⭐'), (4, '⭐⭐⭐⭐'), (5, '⭐⭐⭐⭐⭐')], blank=True, null=True)
     moderado = models.BooleanField(default=False)
-    fecha_creacion = models.DateTimeField(auto_now_add=True)
-    fecha_actualizacion = models.DateTimeField(auto_now=True)
+    fecha_creacion = models.DateTimeField(default=timezone.now)
+    fecha_actualizacion = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return f'{self.user.username.username} - {self.producto.nombre}'
+        return f'{self.user.username} - {self.producto.nombre}'
