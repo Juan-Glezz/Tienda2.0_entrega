@@ -318,6 +318,7 @@ class RegistroView(View):
         return render(request, self.template_name, {'form': form})
 
 
+<<<<<<< HEAD
 class ValorarProductoView(LoginRequiredMixin, CreateView):
     login_url = 'login'
     template_name = 'tienda/valorar_producto.html'
@@ -373,3 +374,59 @@ class EditarComentarioView(LoginRequiredMixin, UpdateView):
         if request.user != objeto.usuario:
             return redirect('checkout', producto_id=objeto.producto.id)
         return super().dispatch(request, *args, **kwargs)
+=======
+class ValorarProductoView(LoginRequiredMixin, View):
+    template_name = 'valorar_producto.html'
+
+    def post(self, request, producto_id):
+        producto=get_object_or_404(Producto,pk=producto_id)
+        valoracion=int(request.POST.get('valoracion'))
+        comentario_existente = Comentario.objects.filter(usuario=request.user, producto=producto).first()
+
+        if comentario_existente:
+            comentario_existente.valoracion = valoracion
+            comentario_existente.save()
+        else:
+            Comentario.objects.create(usuario=request.user, producto=producto, valoracion=valoracion)
+
+        return redirect('detalles_producto', producto_id=producto_id)
+
+    def get(self, request, producto_id):
+        producto = get_object_or_404(Producto, pk=producto_id)
+        return render(request, self.template_name, {'producto': producto})
+
+    class ModerarComentariosListView(UserPassesTestMixin, ListView):
+        template_name = 'moderar_comentarios.html'
+        queryset = Comentario.objects.filter(moderado=False)
+        context_object_name = 'comentarios_pendientes'
+
+        def test_func(self):
+            return self.request.user.is_staff
+
+    class ModerarComentarioView(UserPassesTestMixin, UpdateView):
+        model = Comentario
+        template_name = 'moderar_comentario.html'
+        fields = ['moderado']
+        success_url = '/moderar-comentarios/'
+
+        def test_func(self):
+            return self.request.user.is_staff
+
+    class EditarComentarioView(LoginRequiredMixin, UpdateView):
+        model = Comentario
+        template_name = 'editar_comentario.html'
+        form_class = ComentarioForm
+
+        def form_valid(self, form):
+            nextURL = self.get_success_url()
+            if not nextURL:
+                nextURL = 'tienda/'
+            return redirect(nextURL)
+
+        def dispatch(self, request, *args, **kwargs):
+            objeto = self.get_object()
+            if request.user != objeto.usuario:
+                # Lógica para manejar el caso en que el usuario no pueda editar el comentario
+                return redirect('checkout', producto_id=objeto.producto.id)
+            return super().dispatch(request, *args, **kwargs)
+>>>>>>> aa82e657380dfe30fdd7407fc57039aab7b7337b

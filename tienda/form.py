@@ -51,7 +51,6 @@ class LoginForm(AuthenticationForm):
     next = forms.CharField(widget=forms.HiddenInput, initial="/tienda")
 
 
-
 class ClienteForm(forms.ModelForm):
     class Meta:
         model = Cliente
@@ -63,6 +62,7 @@ class DireccionesForm(forms.ModelForm):
         model = Direccion
         fields = ['direccion_envio', 'direccion_facturacion']
 
+
 class TarjetasForm(forms.ModelForm):
     class Meta:
         model = Tarjeta
@@ -72,5 +72,15 @@ class TarjetasForm(forms.ModelForm):
 class ComentarioForm(forms.ModelForm):
     class Meta:
         model = Comentario
+<<<<<<< HEAD
         fields = ['texto', 'valoracion']
 
+=======
+        fields = ['texto']
+
+
+class ComentarioEditForm(forms.ModelForm):
+    class Meta:
+        model = Comentario
+        fields = ['texto']
+>>>>>>> aa82e657380dfe30fdd7407fc57039aab7b7337b
