@@ -20,15 +20,9 @@ urlpatterns = [
     path('tienda/direcciones/', EditarDireccionView.as_view(), name='direcciones'),
     path('tienda/tarjetas/', EditarTarjetaView.as_view(), name='tarjetas'),
     path('tienda/registro/', RegistroView.as_view(), name='registro'),
-<<<<<<< HEAD
     path('tienda/editar_comentario/', EditarComentarioView.as_view(), name='editar_comentario'),
     # path('tienda/moderar_comentario/', .as_view(), name='moderar_comentario'),
     path('tienda/valorar_producto/<int:pk>/', ValorarProductoView.as_view(), name='valoracion_producto'),
     path('tienda/comentarios_producto/<int:pk>/', MostrarComentariosView.as_view(), name='comentarios_producto'),
-=======
-    path('tienda/editar_comentario/', RegistroView.as_view(), name='editar_comentario'),
-    path('tienda/moderar_comentario/', RegistroView.as_view(), name='moderar_comentario'),
-    path('tienda/valorar_producto/', RegistroView.as_view(), name='valoracion_producto'),
-    path('tienda/comentarios_producto/', RegistroView.as_view(), name='comentarios_producto'),
->>>>>>> aa82e657380dfe30fdd7407fc57039aab7b7337b
+
 ]

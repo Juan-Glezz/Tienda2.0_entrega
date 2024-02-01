@@ -4,18 +4,13 @@
   <center>
     <h2>Valorar Producto</h2>
     <div class="valorar-producto">
-<<<<<<< HEAD
       <h3>{{ product.nombre }}</h3>
-=======
-      <h3>{{ producto.nombre }}</h3>
->>>>>>> aa82e657380dfe30fdd7407fc57039aab7b7337b
       <p>Modelo: {{ producto.modelo }} / Unidades: {{ producto.unidades }}</p>
       <p>Precio: {{ producto.precio }} / Marca: {{ producto.marca }}</p>
 
       <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-<<<<<<< HEAD
         <button type="submit" class="myButton6">Añadir comentario y valoración</button>
       </form>
 
@@ -23,13 +18,3 @@
     </div>
   </center>
 {% endblock %}
-=======
-        <button type="submit" class="myButton6">Valorar</button>
-      </form>
-
-      <br><br>
-      <a href="{% url 'comentarios_producto' producto.id %}" class="myButton6">Comentarios</a>
-    </div>
-  </center>
-{% endblock %}
->>>>>>> aa82e657380dfe30fdd7407fc57039aab7b7337b

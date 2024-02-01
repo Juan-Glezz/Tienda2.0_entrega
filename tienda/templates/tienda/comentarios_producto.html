@@ -1,7 +1,6 @@
 {% extends 'tienda/base.html' %}
 
 {% block content %}
-<<<<<<< HEAD
     <h2>Comentarios del Producto{{ producto.nombre }}</h2>
     <ul>
       {% for comentario in object_list %}
@@ -16,27 +15,4 @@
         <li>No hay comentarios para este producto.</li>
       {% endfor %}
     </ul>
-  </div>
-=======
-  <center>
-    <h2>Comentarios del Producto</h2>
-    <div class="comentarios-producto">
-      {% for comentario in comentarios %}
-        <div class="comentario">
-          <p>{{ comentario.usuario.username }} dijo:</p>
-          <p>{{ comentario.texto }}</p>
-          {% if comentario.usuario == request.user %}
-            <a href="{% url 'editar_comentario' comentario.id %}" class="myButton6">Editar</a>
-          {% endif %}
-        </div>
-      {% endfor %}
-      <form method="post" action="{% url 'agregar_comentario' producto.id %}">
-        {% csrf_token %}
-        <textarea name="texto" rows="4" cols="50" placeholder="Añadir un comentario"></textarea>
-        <br>
-        <button type="submit" class="myButton6">Agregar Comentario</button>
-      </form>
-    </div>
-  </center>
->>>>>>> aa82e657380dfe30fdd7407fc57039aab7b7337b
 {% endblock %}
