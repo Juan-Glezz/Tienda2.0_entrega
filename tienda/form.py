@@ -1,4 +1,4 @@
-from .models import Producto, Compra, Cliente, Tarjeta, Direccion, Comentario
+from .models import Producto, Compra, Cliente, Tarjeta, Direccion
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
@@ -22,9 +22,10 @@ class PostProducto(forms.ModelForm):
 # de la clase Meta, se le indica al formulario que utilice ese modelo como base para las operaciones de creación o actualización.
 # Los campos definidos en el atributo fields determinan qué campos del modelo Producto se mostrarán en el formulario.
 class CompraForm(forms.ModelForm):
+    comentario = forms.CharField(widget=forms.Textarea, required=False)
     class Meta:
         model = Compra
-        fields = ['unidades']
+        fields = ['unidades','comentario','valoracion']
 
 
 # Dentro de la clase RegistroForm, se define una clase interna llamada Meta. Esta clase interna se utiliza para configurar metadatos
@@ -69,13 +70,13 @@ class TarjetasForm(forms.ModelForm):
         fields = ['nombre_tarjeta', 'tipo_tarjeta', 'titular_tarjeta', 'caducidad_tarjeta']
 
 
-class ComentarioForm(forms.ModelForm):
-    class Meta:
-        model = Comentario
-        fields = ['texto', 'valoracion']
-
-
-class ComentarioEditForm(forms.ModelForm):
-    class Meta:
-        model = Comentario
-        fields = ['texto']
+# class ComentarioForm(forms.ModelForm):
+#     class Meta:
+#         model = Comentario
+#         fields = ['texto', 'valoracion']
+#
+#
+# class ComentarioEditForm(forms.ModelForm):
+#     class Meta:
+#         model = Comentario
+#         fields = ['texto']

@@ -1,15 +1,14 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import LoginView
 from django.shortcuts import render, get_object_or_404, redirect
-from .form import PostProducto, LoginForm, CompraForm, RegistroForm, ClienteForm, DireccionesForm, TarjetasForm, \
-    ComentarioForm
+from .form import PostProducto, LoginForm, CompraForm, RegistroForm, ClienteForm, DireccionesForm, TarjetasForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.utils import timezone
 from django.db.models import Count, Sum
 from django.db import transaction
-from .models import Producto, Cliente, Compra, Marca, Direccion, Tarjeta, Comentario
+from .models import Producto, Cliente, Compra, Marca, Direccion, Tarjeta
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView, ListView, CreateView, UpdateView, DeleteView
 from django.views import View
@@ -20,25 +19,8 @@ def cliente_existe(user):
     return Cliente.objects.filter(user=user).exists()
 
 
-# Create your views here.
-# una función que devuelve un archivo HTML almacenado en una carpeta específica
-# cuando se llama desde una URL específica.
 class WelcomeView(TemplateView):
     template_name = "tienda/index.html"
-
-
-# @login_required: Esto significa que para acceder a la función "productos",
-# el usuario debe estar autenticado. Si el usuario
-# no está autenticado, se le redirigirá a la URL '/tienda/login/'.
-# @staff_member_required: Esto significa que solo los usuarios que tienen el
-# permiso de "staff member" podrán acceder a la función "productos".
-# Si el usuario no tiene este permiso, recibirá un mensaje de error.
-
-
-# Esta función recibe un objeto request que contiene la información de la solicitud
-# realizada por el cliente, posteriormente se realiza una consulta a la base de datos
-# para obtener todos los objetos de la clase Producto. El método filter() devuelve una lista
-# de objetos filtrados(En este caso es
 
 
 class ProductosView(ListView):
@@ -159,31 +141,70 @@ class Log_outView(View):
 # de compra relacionados con el cliente y el producto, se calculan las variables y
 # se actualizan las cantidades del producto y el saldo del cliente. Finalmente, se redirige a la página
 # de bienvenida. Si la solicitud no es de tipo POST, se renderiza un formulario de compra.
-@transaction.atomic
-@login_required(login_url='/tienda/tienda/login/')
-def checkout(request, pk):
-    producto = get_object_or_404(Producto, pk=pk)
-    cliente = get_object_or_404(Cliente, user=request.user)
-    if request.method == "POST":
+
+@method_decorator(login_required, name='dispatch')
+class Checkout(LoginRequiredMixin, View):
+    login_url = 'login'
+    template_name = 'tienda/checkout.html'
+    model = Compra
+    form_class = CompraForm
+    success_url = reverse_lazy('welcome')
+
+    def get(self, request, pk):
+        producto = get_object_or_404(Producto, pk=pk)
+        form = CompraForm()
+        comentarios = Compra.objects.filter(producto=producto).exclude(comentario__exact='').order_by('-fecha')
+        return render(request, 'tienda/checkout.html', {'form': form, 'producto': producto, 'comentarios': comentarios})
+
+    def post(self, request, pk):
+        producto = get_object_or_404(Producto, pk=pk)
+        cliente = get_object_or_404(Cliente, user=request.user)
         form = CompraForm(request.POST)
         if form.is_valid():
             unidades = form.cleaned_data['unidades']
             if unidades <= producto.unidades:
-                producto.unidades -= unidades
-                producto.save()
-                compra = Compra()
-                compra.producto = producto
-                compra.user = cliente
-                compra.unidades = unidades
-                compra.importe = unidades * producto.precio
-                compra.fecha = timezone.now()
-                compra.save()
-                cliente.saldo -= compra.importe
-                cliente.save()
+                with transaction.atomic():
+                    producto.unidades -= unidades
+                    producto.save()
+                    compra = Compra()
+                    compra.producto = producto
+                    compra.user = cliente
+                    compra.unidades = unidades
+                    compra.importe = unidades * producto.precio
+                    compra.fecha = timezone.now()
+                    compra.save()
+                    cliente.saldo -= compra.importe
+                    cliente.save()
                 return redirect('welcome')
-    form = CompraForm()
-    return render(request, 'tienda/checkout.html', {'form': form, 'producto': producto})
+        comentarios = Compra.objects.filter(producto=producto).exclude(comentario__exact='').order_by('-fecha')
+        return render(request, 'tienda/checkout.html', {'form': form, 'producto': producto, 'comentarios': comentarios})
 
+
+# @transaction.atomic
+# @login_required(login_url='/tienda/tienda/login/')
+# def checkout(request, pk):
+#     producto = get_object_or_404(Producto, pk=pk)
+#     cliente = get_object_or_404(Cliente, user=request.user)
+#     if request.method == "POST":
+#         form = CompraForm(request.POST)
+#         if form.is_valid():
+#             unidades = form.cleaned_data['unidades']
+#             if unidades <= producto.unidades:
+#                 producto.unidades -= unidades
+#                 producto.save()
+#                 compra = Compra()
+#                 compra.producto = producto
+#                 compra.user = cliente
+#                 compra.unidades = unidades
+#                 compra.importe = unidades * producto.precio
+#                 compra.fecha = timezone.now()
+#                 compra.save()
+#                 cliente.saldo -= compra.importe
+#                 cliente.save()
+#                 return redirect('welcome')
+#     form = CompraForm()
+#     return render(request, 'tienda/checkout.html', {'form': form, 'producto': producto})
+#
 
 # Para acceder a esta funcion, el usuario debe haber iniciado sesión y ser miembro del personal.
 # La variable productos recupera los objetos de la clase Producto y los ordena según la cantidad
@@ -316,57 +337,3 @@ class RegistroView(View):
             login(request, user)
             return redirect('welcome')
         return render(request, self.template_name, {'form': form})
-
-
-class ValorarProductoView(LoginRequiredMixin, CreateView):
-    login_url = 'login'
-    template_name = 'tienda/valorar_producto.html'
-    model = Comentario
-    form_class = ComentarioForm
-    success_url = reverse_lazy('comentarios_producto')
-
-    def form_valid(self, form):
-        compra_id = self.kwargs['pk']
-        compra = get_object_or_404(Compra, id=compra_id)
-        producto = compra.producto  # Obtén el producto asociado a la compra
-        form.instance.user = self.request.user
-        form.instance.producto = producto
-        form.instance.fecha_creacion = timezone.now()
-        form.instance.fecha_actualizacion = timezone.now()
-        return super().form_valid(form)
-
-    @method_decorator(staff_member_required)
-    def dispatch(self, *args, **kwargs):
-        return super().dispatch(*args, **kwargs)
-
-    def get_context_data(self, **kwargs, ):
-        context = super().get_context_data(**kwargs)
-        producto_pk = self.kwargs['pk']
-        context['producto'] = Producto.objects.get(pk=producto_pk)
-        return context
-
-
-class MostrarComentariosView(LoginRequiredMixin, ListView):
-    model = Comentario
-    template_name = 'tienda/comentarios_producto.html'
-
-    def dispatch(self, *args, **kwargs):
-        return super().dispatch(*args, **kwargs)
-
-
-class EditarComentarioView(LoginRequiredMixin, UpdateView):
-    model = Comentario
-    template_name = 'templates/tienda/editar_comentario.html'
-    form_class = ComentarioForm
-
-    def form_valid(self, form):
-        nextURL = self.get_success_url()
-        if not nextURL:
-            nextURL = 'tienda/'
-        return redirect(nextURL)
-
-    def dispatch(self, request, *args, **kwargs):
-        objeto = self.get_object()
-        if request.user != objeto.usuario:
-            return redirect('checkout', producto_id=objeto.producto.id)
-        return super().dispatch(request, *args, **kwargs)

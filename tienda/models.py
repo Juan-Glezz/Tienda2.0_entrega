@@ -95,7 +95,8 @@ class Compra(models.Model):
     unidades = models.IntegerField()
     importe = models.DecimalField(max_digits=12, decimal_places=2)
     iva = models.DecimalField(max_digits=12, decimal_places=2, default=0.21)
-
+    valoracion = models.IntegerField(choices=[(1, '⭐'), (2, '⭐⭐'), (3, '⭐⭐⭐'), (4, '⭐⭐⭐⭐'), (5, '⭐⭐⭐⭐⭐')], blank=True,  null=True)
+    comentario = models.TextField(blank=True, null=True)
     def __str__(self):
         return f'{self.user.user.username}{self.fecha}'
 
@@ -134,14 +135,3 @@ class Tarjeta(models.Model):
         verbose_name_plural = "Tarjetas"
 
 
-class Comentario(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
-    texto = models.TextField(blank=True, null=True)
-    valoracion = models.IntegerField(choices=[(1, '⭐'), (2, '⭐⭐'), (3, '⭐⭐⭐'), (4, '⭐⭐⭐⭐'), (5, '⭐⭐⭐⭐⭐')], blank=True, null=True)
-    moderado = models.BooleanField(default=False)
-    fecha_creacion = models.DateTimeField(default=timezone.now)
-    fecha_actualizacion = models.DateTimeField(default=timezone.now)
-
-    def __str__(self):
-        return f'{self.user.username} - {self.producto.nombre}'
