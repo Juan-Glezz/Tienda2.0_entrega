@@ -19,7 +19,6 @@
             {% csrf_token %}
             {{ form.as_div }}
             <br>
-             <button class="myButton6" type="submit">Valorar</button>
             <button class="myButton6" type="submit">Compra</button>
         </form>
     </div>
@@ -29,7 +28,8 @@
                 {% if comentarios %}
                     <ul>
                         {% for comentario in comentarios %}
-                            <li>{{ comentario.user.user.username }} ({{ comentario.fecha }}): {{ comentario.comentario }} [{{ comentario.valoracion }}]</li>
+                            {{ comentario.valoracion }}
+                              <li>{{ comentario.user.user.username }} ({{ comentario.fecha }}): {{ comentario.comentario }} </li>
                         {% endfor %}
                     </ul>
                 {% else %}

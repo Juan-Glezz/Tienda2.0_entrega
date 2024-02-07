@@ -33,25 +33,11 @@ class ProductosView(ListView):
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
 
-
-# Esta funcion utiliza la función filter() para obtener todos los objetos de la clase Producto
-# y almacenarlos en la variable Productos. Luego, se utiliza la función render() para renderizar
-# la plantilla tienda/compra.html junto con los productos obtenidos. Estos productos se pasan a
-# la plantilla, con el nombre Productos. Esto permite acceder a los productos en la plantilla para mostrarlos.
 class CompraView(ListView):
     model = Producto
     template_name = 'tienda/compra.html'
     context_object_name = 'Productos'
 
-
-# Esta funcion tiene el parametro pk, que indica el identificador del Producto que se desea editar,
-# une vez hecho esto recupera el objeto Producto basado en el pk proporcionado. Si no se encuentra,
-# muestra una página de error 404. Luego si la solicitud es del tipo "POST", se crea una instancia del formulario
-# PostProducto utilizando los datos enviados en la solicitud, esta instancia del formulario se asocia con el objeto
-# producto que se desea editar. Si el formulario es válido, los cambios se guardan en la base de datos utilizando
-# form.save() y se redirige al usuario a la página de productos, en caso de que el formulario no sea válido, se
-# renderiza la página de edición nuevamente, pero esta vez con los errores del formulario visibles
-# para que el usuario los corrija. Finalmente, se renderiza la plantilla tienda/editar.html
 class Post_EditView(UpdateView):
     model = Producto
     template_name = 'tienda/editar.html'
@@ -64,10 +50,7 @@ class Post_EditView(UpdateView):
         return super().dispatch(*args, **kwargs)
 
 
-# Esta función toma los argumentos request y pk. El pk es la clave primaria del producto que
-# se va a eliminar, se busca el producto en la base de datos usando su clave primaria pk y
-# se elimina usando el método delete() y lo elimina de la base de datos. Una vez eliminado,
-# redirecciona al usuario a la página de productos
+
 @method_decorator(login_required(login_url='/tienda/login/'), name='dispatch')
 @method_decorator(staff_member_required, name='dispatch')
 class Post_eliminarView(DeleteView):
@@ -78,8 +61,6 @@ class Post_eliminarView(DeleteView):
         return redirect('productos')
 
 
-# Esta funcion hace que cuando se realiza una solicitud POST con datos válidos en el formulario
-# PostProducto, se guarda en la base de datos y se redirige al usuario a la página de productos.
 class Post_Nuevo_View(CreateView):
     model = Producto
     template_name = 'tienda/nuevo.html'
@@ -92,24 +73,14 @@ class Post_Nuevo_View(CreateView):
         return super().dispatch(*args, **kwargs)
 
 
-# Obtiene el valor del parámetro "buscar_post" de la solicitud utilizando el método GET, con ello
-# filtra los objetos de la clase Producto en la base de datos. En este caso, los productos se
-# filtran por su nombre y se obtienen aquellos cuyo nombre coincide con el criterio de búsqueda.
-# Carga su html correspondiente y pasa los productos obtenidos y el término de búsqueda como variables y finalmente lo renderiza.
+
 def post_buscar(request):
     busqueda = request.GET.get("buscar_post")
     Productos = Producto.objects.filter(nombre=busqueda)
     return render(request, 'tienda/mostrarBusqueda.html', {'Productos': Productos, "busqueda": busqueda})
 
 
-# Este código define la función log_in que recibe un objeto request como parámetro. El objeto request
-#  contiene información sobre la solicitud. Esto realiza varias comprobaciones con el inicio de sesión
-# de un usuario: redirecciona al usuario a la página de compra si ya está iniciado sesión, verifica
-# si la solicitud es de tipo POST, crea un formulario de inicio de sesión utilizando los datos recibidos
-# valida el formulario, obtiene el nombre de usuario y la contraseña ingresados, obtiene el destino de
-# redirección, autentica al usuario verificando su nombre de usuario y contraseña, inicia sesión si
-# el usuario es válido, muestra un mensaje de error si el usuario no es válido, crea un formulario
-# vacío si la solicitud no es de tipo POST y finalmente renderiza la página de inicio de sesión con el formulario correspondiente.
+
 class Log_In_View(LoginView):
     template_name = 'tienda/login.html'
 
@@ -125,22 +96,13 @@ class Log_In_View(LoginView):
         return response
 
 
-# Este código es una función llamada log_out que se encarga de cerrar la sesión de un usuario.
-# Primero, se llama a la función logout pasándole el objeto request, lo cual desloguea al
-# usuario actual. Luego, se redirige al usuario a la página de bienvenida utilizando la función redirect
-# pasándole como argumento el nombre de la ruta welcome.
+
 class Log_outView(View):
     def get(self, request):
         logout(request)
         return redirect('welcome')
 
 
-# El código es una función de checkout que recibe una solicitud (request) y un pk como parámetros,
-# lo que hace esta función en si es, tomar los datos de un producto y un cliente, y si la solicitud
-# es de tipo POST, se valida un formulario de compra. Si el formulario es válido, se crean registros
-# de compra relacionados con el cliente y el producto, se calculan las variables y
-# se actualizan las cantidades del producto y el saldo del cliente. Finalmente, se redirige a la página
-# de bienvenida. Si la solicitud no es de tipo POST, se renderiza un formulario de compra.
 
 @method_decorator(login_required, name='dispatch')
 class Checkout(LoginRequiredMixin, View):
@@ -153,7 +115,7 @@ class Checkout(LoginRequiredMixin, View):
     def get(self, request, pk):
         producto = get_object_or_404(Producto, pk=pk)
         form = CompraForm()
-        comentarios = Compra.objects.filter(producto=producto).exclude(comentario__exact='').order_by('-fecha')
+        comentarios = Compra.objects.filter(producto=producto).order_by('-fecha')
         return render(request, 'tienda/checkout.html', {'form': form, 'producto': producto, 'comentarios': comentarios})
 
     def post(self, request, pk):
@@ -162,6 +124,8 @@ class Checkout(LoginRequiredMixin, View):
         form = CompraForm(request.POST)
         if form.is_valid():
             unidades = form.cleaned_data['unidades']
+            comentario=form.cleaned_data['comentario']
+            valoracion = form.cleaned_data['valoracion']
             if unidades <= producto.unidades:
                 with transaction.atomic():
                     producto.unidades -= unidades
@@ -172,12 +136,13 @@ class Checkout(LoginRequiredMixin, View):
                     compra.unidades = unidades
                     compra.importe = unidades * producto.precio
                     compra.fecha = timezone.now()
+                    compra.comentario = comentario
+                    compra.valoracion =valoracion
                     compra.save()
                     cliente.saldo -= compra.importe
                     cliente.save()
                 return redirect('welcome')
-        comentarios = Compra.objects.filter(producto=producto).exclude(comentario__exact='').order_by('-fecha')
-        return render(request, 'tienda/checkout.html', {'form': form, 'producto': producto, 'comentarios': comentarios})
+        return render(request, 'tienda/checkout.html', {'form': form, 'producto': producto})
 
 
 # @transaction.atomic
@@ -206,11 +171,6 @@ class Checkout(LoginRequiredMixin, View):
 #     return render(request, 'tienda/checkout.html', {'form': form, 'producto': producto})
 #
 
-# Para acceder a esta funcion, el usuario debe haber iniciado sesión y ser miembro del personal.
-# La variable productos recupera los objetos de la clase Producto y los ordena según la cantidad
-# de compras que han tenido en orden descendente y se seleccionan los primeros 10 productos de la
-# lista. Una vez terminado eso, devuelve una respuesta renderizando el template tienda/top10Compras.html
-# y pasando la variable productos para poder acceder a ellos en la plantilla.
 class TopProducto_Views(ListView):
     template_name = 'tienda/informe.html'
     context_object_name = 'topP'

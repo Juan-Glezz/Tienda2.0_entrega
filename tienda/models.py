@@ -66,7 +66,7 @@ class Producto(models.Model):
 class Cliente(models.Model):
     vip = models.BooleanField(default=False)
     saldo = models.DecimalField(max_digits=12, decimal_places=2)
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,max_length=40)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, max_length=40)
 
     def __str__(self):
         return f'{self.user.username}'
@@ -95,14 +95,25 @@ class Compra(models.Model):
     unidades = models.IntegerField()
     importe = models.DecimalField(max_digits=12, decimal_places=2)
     iva = models.DecimalField(max_digits=12, decimal_places=2, default=0.21)
-    valoracion = models.IntegerField(choices=[(1, '⭐'), (2, '⭐⭐'), (3, '⭐⭐⭐'), (4, '⭐⭐⭐⭐'), (5, '⭐⭐⭐⭐⭐')], blank=True,  null=True)
-    comentario = models.TextField(blank=True, null=True)
+
     def __str__(self):
         return f'{self.user.user.username}{self.fecha}'
 
     class Meta:
         unique_together = ['fecha', 'producto', 'user']
         verbose_name_plural = "Compras"
+
+
+class Comentario(models.Model):
+    valoracion = models.IntegerField(choices=[(1, '⭐'), (2, '⭐⭐'), (3, '⭐⭐⭐'), (4, '⭐⭐⭐⭐'), (5, '⭐⭐⭐⭐⭐')], blank=True,null=True)
+    comentario = models.TextField(blank=True, null=True)
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.comentario}{self.valoracion}'
+
+    class Meta:
+        verbose_name_plural = "Comentarios"
 
 
 class Direccion(models.Model):
@@ -133,5 +144,3 @@ class Tarjeta(models.Model):
 
     class Meta:
         verbose_name_plural = "Tarjetas"
-
-
