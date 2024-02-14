@@ -1,4 +1,5 @@
 {% load static %}
+ {% load i18n %}
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -14,23 +15,23 @@
 		<h1 class="titulo" ><a href="/">Tienda Virtual</a></h1>
 		<div class="usuario">
 			{% if user.is_authenticated %}
-				<p class="colorLetra">{{ user.username }}, Has iniciado sesion</p>
-				<a class="registro" href="{% url 'logout' %}">Cerrar Sesion</a>
-                <a class="editar" href="{% url 'menu' %}">Perfil ✏</a>
+				<p class="colorLetra">{{ user.username }},{% trans 'Has iniciado sesion' %} </p>
+				<a class="registro" href="{% url 'logout' %}">{% trans 'Cerrar Sesion' %}</a>
+                <a class="editar" href="{% url 'menu' %}"> {% trans 'Perfil' %}✏</a>
 			{% else %}
-				<p>Hola, usuario, porfavor inicie sesión o registrese. </p>
-				<a class="registro" href="{% url 'login' %}">Iniciar sesión</a>
-                <a class="registro" href="{% url 'registro' %}">Registrarse  </a>
+				<p>{% trans 'Hola, usuario, porfavor inicie sesión o registrese.' %} </p>
+				<a class="registro" href="{% url 'login' %}">{% trans 'Iniciar sesión' %}</a>
+                <a class="registro" href="{% url 'registro' %}">{% trans 'Registrarse' %}  </a>
 			
 			{% endif %}
 		</div>
     	</div>
 		<ul>
 			{% if user.is_staff %}
-					<a class="mybutton5" href="{% url 'productos' %}">Configuración de adminitrador</a>
-					<button type="action"  class="mybutton5" ><a class="enlace" href="{% url 'top_clientes' %}">Top Clientes</a></button>
-					<button type="action"  class="mybutton5"><a class="enlace" href="{% url 'top_productos' %}">Top Productos</a></button>
-					<button type="action"  class="mybutton5"><a class="enlace" href="{% url 'historial' %}">Todas las compras</a></button>	
+					<a class="mybutton5" href="{% url 'productos' %}">{% trans 'Configuración de adminitrador' %}</a>
+					<button type="action"  class="mybutton5" ><a class="enlace" href="{% url 'top_clientes' %}">{% trans 'Top Clientes' %}</a></button>
+					<button type="action"  class="mybutton5"><a class="enlace" href="{% url 'top_productos' %}">{% trans 'Top Productos' %}</a></button>
+					<button type="action"  class="mybutton5"><a class="enlace" href="{% url 'historial' %}">{% trans 'Todas las compras' %}</a></button>
 			{% endif %}
 		</ul>
 	</header>

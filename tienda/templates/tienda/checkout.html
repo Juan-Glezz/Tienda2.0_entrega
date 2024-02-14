@@ -1,7 +1,8 @@
 {% extends 'tienda/base.html' %}
 {% block content %}
+           {% load i18n %}
     <center>
-    <h2>Confirmación de Compra</h2>
+    <h2>{% trans 'Confirmación de Compra' %}</h2>
     <div class="productofinal">
          <br><br>
           <br><br>
@@ -19,12 +20,12 @@
             {% csrf_token %}
             {{ form.as_div }}
             <br>
-            <button class="myButton6" type="submit">Compra</button>
-            <a class="myButton6" href="{% url 'crear_comentario' pk=producto.pk %}">Crear Comentarios </a>
+            <button class="myButton6" type="submit">{% trans 'Compra' %}</button>
+            <a class="myButton6" href="{% url 'crear_comentario' pk=producto.pk %}">{% trans 'Crear Comentarios' %} </a>
         </form>
     </div>
     </center>
-    <h3>Comentarios:</h3>
+    <h3>{% trans 'Comentarios' %}:</h3>
         <ul>
             {% for comentario in producto.comentario_set.all %}
                 <li>{{ comentario.comentario }}</li>

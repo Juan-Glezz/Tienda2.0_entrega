@@ -1,13 +1,22 @@
 {% extends 'tienda/base.html' %}
-
 {% block content %}
+           {% load i18n %}
     <center>
-    <h2>Crear Comentario</h2>
+    <h2>{% trans 'Crear Comentarios' %}</h2>
     <div class="comentario-form">
         <form method="POST">
             {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Guardar Comentario</button>
+            <div>
+                <p>{% trans 'Valoración' %}:</p>
+                {{ form.valoracion }}
+            </div>
+            <div>
+                <p>{% trans 'Comentario' %}:</p>
+             {{ form.comentario }}
+             </div>
+            <br>
+            <br>
+            <button type="submit">{% trans 'Guardar Comentario' %}</button>
         </form>
     </div>
     </center>

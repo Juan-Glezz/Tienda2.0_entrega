@@ -1,7 +1,8 @@
 {%  extends 'tienda/producto.html' %}
     {% block content %}
+        {% load i18n %}
     <form action="{% url 'buscar' %}" method="get">
-        <input id="inp_search" type="text" placeholder="Buscar..." name="buscar_post" />
+        <input id="inp_search" type="text" placeholder="{% trans 'Buscar...' %}" name="buscar_post" />
         <label for="btn_search"><i class="gg-search"></i></label>
         <button class="button" id="btn_search" >🔎</button>
     </form>
@@ -16,7 +17,7 @@
                 {% csrf_token %}
                 {{ form.as_div }}
                 <br>
-            <a class="myButton3" href="{% url 'checkout' pk=producto.pk %}" >Comprar</a>
+            <a class="myButton3" href="{%  url 'checkout' pk=producto.pk %}" >{% trans 'Comprar' %}</a>
             </div>
             </form>
         {% endfor %}

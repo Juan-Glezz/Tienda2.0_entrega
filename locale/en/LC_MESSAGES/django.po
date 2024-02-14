@@ -33,3 +33,79 @@ msgstr "Virtual Shop"
 #: main/templates/main/index.html:5
 msgid "Aquí empieza todo"
 msgstr "Here is where all starts..."
+
+#: tienda/templates/tienda/compra.html
+msgid "Comprar"
+msgstr "Buy"
+
+#: tienda/templates/tienda/compra.html
+msgid "Buscar..."
+msgstr "Search"
+
+#: tienda/templates/tienda/base.html
+msgid "Has iniciado sesion"
+msgstr "You are logged in"
+
+#: tienda/templates/tienda/base.html
+msgid "Perfil"
+msgstr "Profile"
+
+#: tienda/templates/tienda/base.html
+msgid "Cerrar Sesion"
+msgstr "Sign off"
+#: tienda/templates/tienda/base.html
+msgid "Hola, usuario, porfavor inicie sesión o registrese."
+msgstr "Hello user, please log in or register."
+
+#: tienda/templates/tienda/base.html
+msgid "Iniciar sesión"
+msgstr "Sing in"
+
+#: tienda/templates/tienda/base.html
+msgid "Registrarse"
+msgstr "Login"
+
+#: tienda/templates/tienda/base.html
+msgid "Configuración de adminitrador"
+msgstr "Administrator settings"
+
+#: tienda/templates/tienda/base.html
+msgid "Top Clientes"
+msgstr "Top Clients"
+
+#: tienda/templates/tienda/base.html
+msgid "Top Productos"
+msgstr "Top Products"
+
+#: tienda/templates/tienda/base.html
+msgid "Todas las compras"
+msgstr "All Purchases"
+
+#: tienda/templates/tienda/checkout.html
+msgid "Confirmación de Compra"
+msgstr "Purchase confirmation"
+
+#: tienda/templates/tienda/checkout.html
+msgid "Crear Comentarios"
+msgstr "Create Comments"
+
+
+#: tienda/templates/tienda/checkout.html
+msgid "Comentarios"
+msgstr "Comments"
+
+#: tienda/templates/tienda/checkout.html
+msgid "Compra"
+msgstr "Buy"
+
+#: tienda/templates/tienda/comentario_create.html
+msgid "Guardar Comentario"
+msgstr "Save Comments"
+
+#: tienda/templates/tienda/comentario_create.html
+msgid "Valoración"
+msgstr "Review"
+
+#: tienda/templates/tienda/comentario_create.html
+msgid "Comentario"
+msgstr "Comment"
