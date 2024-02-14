@@ -20,20 +20,14 @@
             {{ form.as_div }}
             <br>
             <button class="myButton6" type="submit">Compra</button>
+            <a class="myButton6" href="{% url 'crear_comentario' pk=producto.pk %}">Crear Comentarios </a>
         </form>
     </div>
     </center>
-    <div>
-        <h3>Comentarios de {{ producto.nombre }}</h3>
-                {% if comentarios %}
-                    <ul>
-                        {% for comentario in comentarios %}
-                            {{ comentario.valoracion }}
-                              <li>{{ comentario.user.user.username }} ({{ comentario.fecha }}): {{ comentario.comentario }} </li>
-                        {% endfor %}
-                    </ul>
-                {% else %}
-                    <p>No existen comentarios para este producto.</p>
-                {% endif %}
-    </div>
+    <h3>Comentarios:</h3>
+        <ul>
+            {% for comentario in producto.comentario_set.all %}
+                <li>{{ comentario.comentario }}</li>
+            {% endfor %}
+        </ul>
 {% endblock %}

@@ -1,14 +1,14 @@
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin, PermissionRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.shortcuts import render, get_object_or_404, redirect
-from .form import PostProducto, LoginForm, CompraForm, RegistroForm, ClienteForm, DireccionesForm, TarjetasForm
+from .form import PostProducto, CompraForm, RegistroForm, ClienteForm, DireccionesForm, TarjetasForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.utils import timezone
 from django.db.models import Count, Sum
 from django.db import transaction
-from .models import Producto, Cliente, Compra, Marca, Direccion, Tarjeta
+from .models import Producto, Cliente, Compra, Marca, Direccion, Tarjeta, Comentario
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView, ListView, CreateView, UpdateView, DeleteView
 from django.views import View
@@ -33,10 +33,12 @@ class ProductosView(ListView):
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
 
+
 class CompraView(ListView):
     model = Producto
     template_name = 'tienda/compra.html'
     context_object_name = 'Productos'
+
 
 class Post_EditView(UpdateView):
     model = Producto
@@ -48,7 +50,6 @@ class Post_EditView(UpdateView):
     @method_decorator(staff_member_required)
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
-
 
 
 @method_decorator(login_required(login_url='/tienda/login/'), name='dispatch')
@@ -73,12 +74,22 @@ class Post_Nuevo_View(CreateView):
         return super().dispatch(*args, **kwargs)
 
 
+class BuscarProductoListView(ListView):
+    model = Producto
+    template_name = 'tienda/mostrarBusqueda.html'
+    context_object_name = 'Productos'
 
-def post_buscar(request):
-    busqueda = request.GET.get("buscar_post")
-    Productos = Producto.objects.filter(nombre=busqueda)
-    return render(request, 'tienda/mostrarBusqueda.html', {'Productos': Productos, "busqueda": busqueda})
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        busqueda = self.request.GET.get('buscar_post')
+        if busqueda:
+            queryset = queryset.filter(nombre__icontains=busqueda)
+        return queryset
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['busqueda'] = self.request.GET.get('buscar_post')
+        return context
 
 
 class Log_In_View(LoginView):
@@ -96,12 +107,10 @@ class Log_In_View(LoginView):
         return response
 
 
-
 class Log_outView(View):
     def get(self, request):
         logout(request)
         return redirect('welcome')
-
 
 
 @method_decorator(login_required, name='dispatch')
@@ -124,8 +133,6 @@ class Checkout(LoginRequiredMixin, View):
         form = CompraForm(request.POST)
         if form.is_valid():
             unidades = form.cleaned_data['unidades']
-            comentario=form.cleaned_data['comentario']
-            valoracion = form.cleaned_data['valoracion']
             if unidades <= producto.unidades:
                 with transaction.atomic():
                     producto.unidades -= unidades
@@ -136,8 +143,6 @@ class Checkout(LoginRequiredMixin, View):
                     compra.unidades = unidades
                     compra.importe = unidades * producto.precio
                     compra.fecha = timezone.now()
-                    compra.comentario = comentario
-                    compra.valoracion =valoracion
                     compra.save()
                     cliente.saldo -= compra.importe
                     cliente.save()
@@ -297,3 +302,34 @@ class RegistroView(View):
             login(request, user)
             return redirect('welcome')
         return render(request, self.template_name, {'form': form})
+
+
+class ComentarioCreateView(CreateView):
+    model = Comentario
+    fields = ['valoracion', 'comentario']
+    template_name = 'tienda/comentario_create.html'
+
+    def form_valid(self, form):
+        form.instance.producto_id = self.kwargs['pk']
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('checkout', kwargs={'pk': self.kwargs['pk']})
+
+
+class ComentarioUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Comentario
+    fields = ['valoracion', 'comentario']
+    template_name = 'tienda/comentario_editar.html'
+
+    def test_func(self):
+        comentario = self.get_object()
+        return self.request.user == comentario.user.user
+
+    def handle_no_permission(self):
+        return redirect('comentario-list')
+
+
+class ComentarioListView(ListView):
+    model = Comentario
+    template_name = 'tienda/checkout.html'
