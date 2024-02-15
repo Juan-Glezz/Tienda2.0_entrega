@@ -28,7 +28,7 @@
     <h3>{% trans 'Comentarios' %}:</h3>
         <ul>
             {% for comentario in producto.comentario_set.all %}
-                <li>{{ comentario.comentario }}</li>
+                <li>{{ comentario.comentario }}- {{ comentario.valoracion }}⭐</li>
             {% endfor %}
         </ul>
 {% endblock %}

@@ -317,18 +317,17 @@ class ComentarioCreateView(CreateView):
         return reverse_lazy('checkout', kwargs={'pk': self.kwargs['pk']})
 
 
-class ComentarioUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+class ComentarioUpdateView(LoginRequiredMixin, UpdateView):
     model = Comentario
     fields = ['valoracion', 'comentario']
     template_name = 'tienda/comentario_editar.html'
 
+    def get_success_url(self):
+        return reverse_lazy('checkout', kwargs={'pk': self.object.producto_id})
+
     def test_func(self):
         comentario = self.get_object()
         return self.request.user == comentario.user.user
-
-    def handle_no_permission(self):
-        return redirect('comentario-list')
-
 
 class ComentarioListView(ListView):
     model = Comentario
