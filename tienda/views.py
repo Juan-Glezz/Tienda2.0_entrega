@@ -333,3 +333,6 @@ class ComentarioUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 class ComentarioListView(ListView):
     model = Comentario
     template_name = 'tienda/checkout.html'
+
+
+# class AgregarAlCarrito(View):

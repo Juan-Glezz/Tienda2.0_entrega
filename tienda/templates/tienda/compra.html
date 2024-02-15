@@ -9,17 +9,17 @@
         <div class="secciones">
         {% for producto in Productos %}
             <div class="producto">
-                <h1>{{ producto.nombre }}</h1>
-                <p>{{ producto.marca }}</p>
-                <p>{{ producto.modelo }}</p>
-                <p>{{ producto.precio }}€</p>
-            <form method="POST">
-                {% csrf_token %}
-                {{ form.as_div }}
-                <br>
-            <a class="myButton3" href="{%  url 'checkout' pk=producto.pk %}" >{% trans 'Comprar' %}</a>
-            </div>
+                    <h1>{{ producto.nombre }}</h1>
+                    <p>{{ producto.marca }}</p>
+                    <p>{{ producto.modelo }}</p>
+                    <p>{{ producto.precio }}€</p>
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ form.as_div }}
+                    <br>
+                <a class="myButton3" href="{%  url 'checkout' pk=producto.pk %}" >{% trans 'Comprar' %}</a>
             </form>
+            </div>
         {% endfor %}
         </div>
     {% endblock %}
