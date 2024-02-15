@@ -107,5 +107,38 @@ msgid "Valoración"
 msgstr "Review"
 
 #: tienda/templates/tienda/comentario_create.html
-msgid "Comentario"
+msgid "Producto"
+msgstr "Product"
+
+msgid "Unidades"
+msgstr "Stock"
+
+msgid "Precio Unitario"
+msgstr "Unit Price"
+
+msgid "Precio Total"
+msgstr "Total Price"
+
+msgid "Confirmación de compra"
+msgstr "Purchase Confirmation"
+
+msgid "Inicio"
+msgstr "Start"
+
+msgid "Agregar al Carrito"
+msgstr "Add to cart"
+
+msgid "Modelos"
 msgstr "Comment"
+
+msgid "Unidades"
+msgstr "Units"
+
+msgid "Precio"
+msgstr "Price"
+
+msgid "Marca"
+msgstr "Mark"
+
+
+

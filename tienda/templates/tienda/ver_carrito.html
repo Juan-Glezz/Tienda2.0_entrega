@@ -1,0 +1,34 @@
+{% extends 'tienda/base.html' %}
+{% block content %}
+     {% load i18n %}
+    <center>
+        <h2>Carrito de Compras</h2>
+        <div class="carrito">
+            <table>
+                <thead>
+                    <tr>
+                        <th>{% trans 'Producto' %}</th>
+                        <th>{% trans 'Unidades' %}</th>
+                        <th>{% trans 'Precio Unitario' %}</th>
+                        <th>{% trans 'Precio Total' %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in carrito %}
+                    <tr>
+                        <td>{{ item.producto.nombre }}</td>
+                        <td>{{ item.unidades }}</td>
+                        <td>{{ item.producto.precio }}</td>
+                        <td>{{ item.precio_total }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <br>
+        <div class="botones">
+            <a href="{% url 'checkout_carrito' %}" class="myButton6">{% trans 'Confirmación de compra' %}</a>
+            <a href="{% url 'welcome' %}" class="myButton6">{% trans 'Inicio' %}</a>
+        </div>
+    </center>
+{% endblock %}

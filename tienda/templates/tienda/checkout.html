@@ -10,19 +10,28 @@
               <h2> {{producto.nombre}}</h2>
         <br><br>
 
-          Modelos: {{producto.modelo}} /
-          Unidades: {{producto.unidades}}
+          {% trans 'Modelos' %}: {{producto.modelo}} /
+          {% trans 'Unidades' %}: {{producto.unidades}}
           <br>
-          Precio: {{producto.precio}} /
-          Marca: {{producto.marca}}
+          {% trans 'Precio' %}: {{producto.precio}} /
+          {% trans 'Marca' %}: {{producto.marca}}
 
-        <form method="POST">
-            {% csrf_token %}
-            {{ form.as_div }}
-            <br>
-            <button class="myButton6" type="submit">{% trans 'Compra' %}</button>
-            <a class="myButton6" href="{% url 'crear_comentario' pk=producto.pk %}">{% trans 'Crear Comentarios' %} </a>
-        </form>
+         <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <!-- Campo oculto para indicar la acción "Agregar al carrito" -->
+                <input type="hidden" name="action" value="add_to_cart">
+                <br>
+                <button class="myButton6" type="submit">{% trans 'Compra' %}</button>
+                <a class="myButton6" href="{% url 'crear_comentario' pk=producto.pk %}">{% trans 'Crear Comentarios' %} </a>
+            </form>
+            <!-- Botón "Agregar al carrito" -->
+            <form method="POST" action="{% url 'agregar_al_carrito' %}">
+                {% csrf_token %}
+                <input type="hidden" name="producto_id" value="{{ producto.pk }}">
+                <input type="number" name="unidades" value="1" min="1">
+                <button class="myButton6" type="submit">{% trans 'Agregar al Carrito' %}</button>
+            </form>
     </div>
     </center>
     <h3>{% trans 'Comentarios' %}:</h3>

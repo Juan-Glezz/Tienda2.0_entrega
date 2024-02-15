@@ -1,0 +1,38 @@
+{% extends 'tienda/base.html' %}
+{% block content %}
+    {% load i18n %}
+    <center>
+        <h2>Checkout del Carrito</h2>
+        <div class="checkout-carrito">
+            <h3>Resumen del Carrito:</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>{% trans 'Producto' %}</th>
+                        <th>{% trans 'Unidades' %}</th>
+                        <th>{% trans 'Precio Unitario' %}</th>
+                        <th>{% trans 'Precio Total' %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in carrito %}
+                    <tr>
+                        <td>{{ item.producto.nombre }}</td>
+                        <td>{{ item.unidades }}</td>
+                        <td>{{ item.producto.precio }}</td>
+                        <td>{{ item.precio_total}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <br>
+        <div class="checkout-form">
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button class="myButton6" type="submit">{% trans 'Comprar' %}</button>
+            </form>
+        </div>
+    </center>
+{% endblock %}

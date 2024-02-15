@@ -1,7 +1,8 @@
 from django.urls import path
 from .views import CompraView, ProductosView, Post_EditView, Post_eliminarView, Post_Nuevo_View, Log_In_View, Checkout, \
     TopProducto_Views, Log_outView, topClientes_View, historial_View, menuPerfil, EditarGeneralView, \
-    EditarDireccionView, EditarTarjetaView, RegistroView, BuscarProductoListView, ComentarioCreateView, ComentarioUpdateView
+    EditarDireccionView, EditarTarjetaView, RegistroView, BuscarProductoListView, ComentarioCreateView, \
+    ComentarioUpdateView, AgregarAlCarrito, VerCarritoView, CheckoutCarritoView
 
 urlpatterns = [
     path('', CompraView.as_view(), name='welcome'),
@@ -24,4 +25,8 @@ urlpatterns = [
     path('tienda/registro/', RegistroView.as_view(), name='registro'),
     path('tienda/comentario_create/<int:pk>/', ComentarioCreateView.as_view(), name='crear_comentario'),
     path('tienda/comentario_editar/<int:pk>/', ComentarioUpdateView.as_view(), name='editar_comentario'),
+    path('tienda/agregar_al_carrito/', AgregarAlCarrito.as_view(), name='agregar_al_carrito'),
+    path('tienda/ver_carrito/', VerCarritoView.as_view(), name='ver_carrito'),
+    path('tienda/checkout_carrito/', CheckoutCarritoView.as_view(), name='checkout_carrito'),
+    path('tienda/comentario_create/<int:pk>/', ComentarioCreateView.as_view(), name='crear_comentario'),
 ]

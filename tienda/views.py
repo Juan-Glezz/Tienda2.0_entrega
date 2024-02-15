@@ -13,6 +13,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView, ListView, CreateView, UpdateView, DeleteView
 from django.views import View
 from django.urls import reverse_lazy
+import json
 
 
 def cliente_existe(user):
@@ -149,32 +150,6 @@ class Checkout(LoginRequiredMixin, View):
                 return redirect('welcome')
         return render(request, 'tienda/checkout.html', {'form': form, 'producto': producto})
 
-
-# @transaction.atomic
-# @login_required(login_url='/tienda/tienda/login/')
-# def checkout(request, pk):
-#     producto = get_object_or_404(Producto, pk=pk)
-#     cliente = get_object_or_404(Cliente, user=request.user)
-#     if request.method == "POST":
-#         form = CompraForm(request.POST)
-#         if form.is_valid():
-#             unidades = form.cleaned_data['unidades']
-#             if unidades <= producto.unidades:
-#                 producto.unidades -= unidades
-#                 producto.save()
-#                 compra = Compra()
-#                 compra.producto = producto
-#                 compra.user = cliente
-#                 compra.unidades = unidades
-#                 compra.importe = unidades * producto.precio
-#                 compra.fecha = timezone.now()
-#                 compra.save()
-#                 cliente.saldo -= compra.importe
-#                 cliente.save()
-#                 return redirect('welcome')
-#     form = CompraForm()
-#     return render(request, 'tienda/checkout.html', {'form': form, 'producto': producto})
-#
 
 class TopProducto_Views(ListView):
     template_name = 'tienda/informe.html'
@@ -329,9 +304,88 @@ class ComentarioUpdateView(LoginRequiredMixin, UpdateView):
         comentario = self.get_object()
         return self.request.user == comentario.user.user
 
+
 class ComentarioListView(ListView):
     model = Comentario
     template_name = 'tienda/checkout.html'
 
 
-# class AgregarAlCarrito(View):
+class AgregarAlCarrito(View):
+    def post(self, request, *args, **kwargs):
+        producto_id = request.POST.get('producto_id')
+        unidades = int(request.POST.get('unidades', 1))
+
+        carrito = request.session.get('carrito', [])
+        if carrito:
+            carrito = json.loads(carrito)
+
+        carrito.append({
+            'producto_id': producto_id,
+            'unidades': unidades
+        })
+
+        request.session['carrito'] = json.dumps(carrito)
+        return redirect('checkout', pk=producto_id)
+
+
+class VerCarritoView(TemplateView):
+    template_name = 'tienda/ver_carrito.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        carrito = self.request.session.get('carrito', [])
+        if carrito:
+            carrito = json.loads(carrito)
+            productos = Producto.objects.filter(id__in=[item['producto_id'] for item in carrito])
+            for item in carrito:
+                producto = productos.get(id=item['producto_id'])
+                item['producto'] = producto
+                # Calcular el precio total para cada elemento del carrito
+                item['precio_total'] = item['unidades'] * producto.precio
+        context['carrito'] = carrito
+        return context
+
+
+class CheckoutCarritoView(View):
+    template_name = 'tienda/checkout_carrito.html'
+
+    def get(self, request, *args, **kwargs):
+        # Obtener el contenido del carrito de la sesión
+        carrito = request.session.get('carrito', [])
+        if carrito:
+            carrito = json.loads(carrito)
+            productos = Producto.objects.filter(id__in=[item['producto_id'] for item in carrito])
+            for item in carrito:
+                producto = productos.get(id=item['producto_id'])
+                item['producto'] = producto
+
+        contexto = {'carrito': carrito}
+        return render(request, 'tienda/checkout_carrito.html', contexto)
+
+    def post(self, request, *args, **kwargs):
+        # Obtener el contenido del carrito de la sesión
+        carrito = request.session.get('carrito', [])
+        if carrito:
+            carrito = json.loads(carrito)
+            # Crear una nueva instancia de Compra
+            compra = Compra.objects.create(
+                user=request.user  # Asignar el usuario actual
+            )
+
+            # Agregar los productos del carrito a la compra
+            for item in carrito:
+                producto = Producto.objects.get(id=item['producto_id'])
+                compra.producto_set.create(
+                    producto=producto,
+                    unidades=item['unidades'],
+                    importe=item['unidades'] * producto.precio,
+                    iva=0.21
+                )
+            # Limpiar el carrito después de completar la compra
+            request.session['carrito'] = json.dumps([])
+
+            return redirect('checkout_carrito.html')
+        else:
+            # Si el formulario no es válido, volver a renderizar la página con los errores
+            contexto = {'carrito': carrito}
+            return render(request, 'tienda/checkout_carrito.html', contexto)

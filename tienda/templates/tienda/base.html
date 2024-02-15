@@ -18,6 +18,7 @@
 				<p class="colorLetra">{{ user.username }},{% trans 'Has iniciado sesion' %} </p>
 				<a class="registro" href="{% url 'logout' %}">{% trans 'Cerrar Sesion' %}</a>
                 <a class="editar" href="{% url 'menu' %}"> {% trans 'Perfil' %}✏</a>
+                <a class="carrito" href="{% url 'ver_carrito' %}">🛒</a>
 			{% else %}
 				<p>{% trans 'Hola, usuario, porfavor inicie sesión o registrese.' %} </p>
 				<a class="registro" href="{% url 'login' %}">{% trans 'Iniciar sesión' %}</a>
