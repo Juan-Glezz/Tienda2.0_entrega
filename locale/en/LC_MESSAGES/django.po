@@ -129,10 +129,7 @@ msgid "Agregar al Carrito"
 msgstr "Add to cart"
 
 msgid "Modelos"
-msgstr "Comment"
-
-msgid "Unidades"
-msgstr "Units"
+msgstr "Model"
 
 msgid "Precio"
 msgstr "Price"
@@ -140,5 +137,6 @@ msgstr "Price"
 msgid "Marca"
 msgstr "Mark"
 
-
+msgid "Editar"
+msgstr "Edit"
 

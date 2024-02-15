@@ -37,7 +37,11 @@
     <h3>{% trans 'Comentarios' %}:</h3>
         <ul>
             {% for comentario in producto.comentario_set.all %}
-                <li>{{ comentario.comentario }}- {{ comentario.valoracion }}⭐</li>
+                <li>{{ comentario.comentario }}- {{ comentario.valoracion }}⭐
+{#               {% if comentario.user == request.user %}#}
+                        <a href="{% url 'editar_comentario' pk=comentario.pk %}" class="myButton6">{% trans 'Editar' %}</a>
+{#               {% endif %}#}
+                </li>
             {% endfor %}
         </ul>
 {% endblock %}
